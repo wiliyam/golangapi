@@ -14,6 +14,7 @@ import (
 
 var client *mongo.Client
 
+//Init is Function to Initializing mongodb database
 func Init() {
 
 	// log.Print(client)
@@ -24,6 +25,7 @@ func Init() {
 	if err != nil {
 		color.Red("[mongodb]:error during making new client")
 		log.Print(err)
+		os.Exit(2)
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -32,6 +34,7 @@ func Init() {
 	if err != nil {
 		color.Red("[mongodb]: error during client connection")
 		log.Print(err)
+		os.Exit(2)
 
 	}
 
@@ -50,18 +53,10 @@ func Init() {
 
 	log.Print(client)
 
-	// ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	// err = client.Connect(ctx)
-	// fmt.Println(err)
-	// if err != nil {
-	// 	color.Red("[Error]: mongodb connection.....")
-	// 	log.Print(err)
-	// }
-
 	color.Green("mongodb database connected successfully...")
 }
 
-//fucnction for return mongo client
+//GetDb is Function to return mongo client
 func GetDb() *mongo.Client {
 	if client != nil {
 		return client
