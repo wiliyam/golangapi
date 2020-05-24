@@ -1,9 +1,14 @@
 package guest
 
 import (
+	"context"
+	"fmt"
+	"golangapi/library/mongodb"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type Guest struct {
@@ -40,6 +45,18 @@ type HTTPError struct {
 func Gethandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+		result, err := mongodb.GetDb().Collection("dummy").InsertOne(ctx, bson.D{
+			{"title", "dummmfsddfsd"},
+			{"tag", "ccfsdfsdfdf"},
+		})
+
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(result)
 		c.JSON(http.StatusOK, map[string]string{
 			"err":     "",
 			"message": "guest get api version 1",

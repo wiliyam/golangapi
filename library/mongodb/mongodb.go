@@ -14,6 +14,8 @@ import (
 
 var client *mongo.Client
 
+var database *mongo.Database
+
 //Init is Function to Initializing mongodb database
 func Init() {
 
@@ -49,18 +51,18 @@ func Init() {
 
 	//link database
 
-	client.Database(os.Getenv("DATABASE"))
+	database = client.Database(os.Getenv("DATABASE"))
 
-	log.Print(client)
+	//log.Print(client)
 
 	color.Green("mongodb database connected successfully...")
 }
 
 //GetDb is Function to return mongo client
-func GetDb() *mongo.Client {
-	if client != nil {
-		return client
+func GetDb() *mongo.Database {
+	if database != nil {
+		return database
 	}
 	Init()
-	return client
+	return database
 }
