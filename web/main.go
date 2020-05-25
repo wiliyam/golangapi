@@ -13,7 +13,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "golangapi/web/docs"
+	_ "golangapi/docs"
 )
 
 // @title glang boiler plate api

@@ -11,25 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type Guest struct {
-	Err     string `json:"err" example:""`
-	Message string `json:"message" example:"some message"`
-}
-
-// NewError example
-func NewError(ctx *gin.Context, status int, err error) {
-	er := HTTPError{
-		Code:    status,
-		Message: err.Error(),
-	}
-	ctx.JSON(status, er)
-}
-
-type HTTPError struct {
-	Code    int    `json:"code" example:"400"`
-	Message string `json:"message" example:"status bad request"`
-}
-
 // Gethandler godoc
 // @Summary Show all guest user
 // @Description get all guest users

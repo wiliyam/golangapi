@@ -1,0 +1,54 @@
+definitions:
+  guest.Guest:
+    properties:
+      err:
+        type: string
+      message:
+        example: some message
+        type: string
+    type: object
+  guest.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /guest/signIn:
+    post:
+      consumes:
+      - application/json
+      description: APi use for login as guest user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/guest.Guest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/guest.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/guest.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/guest.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/guest.HTTPError'
+      summary: guest login api
+      tags:
+      - guest
+swagger: "2.0"
