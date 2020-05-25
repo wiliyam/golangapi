@@ -32,7 +32,3 @@ type HTTPError500 struct {
 // 	}
 // 	ctx.JSON(status, er)
 // }
-
-type Dummy struct {
-	Id int `json:"id"`
-}
