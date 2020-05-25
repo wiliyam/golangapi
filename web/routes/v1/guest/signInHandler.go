@@ -1,6 +1,7 @@
 package guest
 
 import (
+	comm "golangapi/web/commonmodules"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,10 +15,10 @@ import (
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} Guest
-// @Failure 400 {object} HTTPError
-// @Failure 401 {object} HTTPError
-// @Failure 404 {object} HTTPError
-// @Failure 500 {object} HTTPError
+// @Failure 400 {object} comm.HTTPError400
+// @Failure 401 {object} comm.HTTPError401
+// @Failure 404 {object} comm.HTTPError404
+// @Failure 500 {object} comm.HTTPError500
 // @Router /guest/signIn [post]
 func SignInHanlder() gin.HandlerFunc {
 
@@ -36,10 +37,16 @@ func SignInHanlder() gin.HandlerFunc {
 
 		// fmt.Println(result)
 
-		c.JSON(http.StatusOK, map[string]string{
-			"err":     "",
-			"message": "guest get api version 1",
-		})
+		res := comm.HTTPError401{
+			"Status":  401,
+			"Message": "Unauthorized",
+		}
+		c.JSON(http.StatusUnauthorized, res)
+
+		// c.JSON(http.StatusOK, map[string]string{
+		// 	"err":     "",
+		// 	"message": "guest get api version 1",
+		// })
 	}
 
 }

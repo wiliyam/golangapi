@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   guest.Guest:
     properties:
@@ -16,9 +17,16 @@ definitions:
         example: status bad request
         type: string
     type: object
+host: localhost:9191
 info:
-  contact: {}
+  contact:
+    email: wiliyambhadani@gmail.com
+    name: API Support
+  description: This is a sample server celler server.
   license: {}
+  termsOfService: http://swagger.io/terms/
+  title: glang boiler plate api
+  version: "1.0"
 paths:
   /guest/signIn:
     post:
@@ -51,4 +59,10 @@ paths:
       summary: guest login api
       tags:
       - guest
+schemes:
+- http
+- https
+securityDefinitions:
+  BasicAuth:
+    type: basic
 swagger: "2.0"

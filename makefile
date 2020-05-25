@@ -1,2 +1,6 @@
+
+doc :
+	cd web
+	swag init
 dev:
-	goo run main.go
+	go run main.go

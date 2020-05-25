@@ -13,17 +13,17 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "golangapi/docs"
+	_ "golangapi/web/docs"
 )
 
-// @title glang boiler plate api
+// @title glangApi boiler plate
 // @version 1.0
 // @description This is a sample server celler server.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
 // @contact.email wiliyambhadani@gmail.com
-
+// @securityDefinitions.basic BasicAuth
 // @host localhost:9191
 // @BasePath /api/v1
 
