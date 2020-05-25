@@ -1,4 +1,4 @@
-package main
+package playground
 
 import (
 	"context"
@@ -10,24 +10,22 @@ import (
 
 	"github.com/fatih/color"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Dummy struct {
-	Id     bson.ObjectId `bson:"_id,omitempty"`
-	Title  string        `json:"title"`
-	Title2 string        `json:"title2"`
+	ID     primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	Title  string             `json:"title"`
+	Title2 string             `json:"title2"`
 }
 
-func main() {
-	//	port := dotenv.GetVariableValue("SERVER_PORT")
-	color.Magenta("Initializing server...")
+type GuestModel struct {
+	ID         primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	DeviceId   string             `json:"deviceId"`
+	UserGender string             `json:"userGender"`
+}
 
-	//init env variales
-	dotenv.Init()
-
-	//init dabase
-	mongodb.Init()
-
+func getData() []GuestModel {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 	// result, err := mongodb.GetDb().Collection("dummy").InsertOne(ctx, bson.D{
@@ -35,12 +33,12 @@ func main() {
 	// 	{"tag", bson.A{"ccfsdfsdfdf", "nsdsd"}},
 	// })
 
-	resultData := []Dummy{}
+	resultData := []GuestModel{}
 
-	cur, err := mongodb.GetDb().Collection("dummy").Find(ctx, bson.D{})
+	cur, err := mongodb.GetDb().Collection("guest").Find(ctx, bson.D{})
 
 	for cur.Next(ctx) {
-		var dummy Dummy
+		var dummy GuestModel
 		err := cur.Decode(&dummy)
 		if err != nil {
 			log.Fatal(err)
@@ -54,6 +52,21 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(resultData)
+	return resultData
+}
+
+func main1() {
+	//	port := dotenv.GetVariableValue("SERVER_PORT")
+	color.Magenta("Initializing server...")
+
+	//init env variales
+	dotenv.Init()
+
+	//init dabase
+	mongodb.Init()
+
+	result := getData()
+
+	fmt.Println("--result->", result)
 
 }

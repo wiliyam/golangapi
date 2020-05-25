@@ -31,8 +31,8 @@ type HTTPError struct {
 }
 
 // Gethandler godoc
-// @Summary Show all guest user
-// @Description get all guest users
+// @Summary login as guest user
+// @Description this api is use for login as guest in app
 // @Tags Guest
 // @Accept  json
 // @Produce  json
@@ -40,13 +40,14 @@ type HTTPError struct {
 // @Failure 400 {object} HTTPError
 // @Failure 404 {object} HTTPError
 // @Failure 500 {object} HTTPError
-// @Router /guest [get]
+// @Router /guest [post]
 
-func Gethandler() gin.HandlerFunc {
+func PostHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
+		//insert data into database
 		result, err := mongodb.GetDb().Collection("dummy").InsertOne(ctx, bson.D{
 			{"title", "dummmfsddfsd"},
 			{"tag", "ccfsdfsdfdf"},

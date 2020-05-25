@@ -1,21 +1,20 @@
 package web
 
 import (
+	"fmt"
 	"golangapi/dotenv"
 	"golangapi/web/routes"
-	"fmt"
 	"net/http"
 	"os"
+
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 
 	swaggerFiles "github.com/swaggo/files"
-	"github.com/swaggo/gin-swagger"
-	
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	_ "golangapi/web/docs"
-
 )
-
 
 // @title glang boiler plate api
 // @version 1.0
@@ -29,7 +28,6 @@ import (
 // @BasePath /api/v1
 
 // @schemes http https
-
 
 //init server method
 func InitServer() {
@@ -75,15 +73,15 @@ func InitServer() {
 
 	})
 
-    //register swagger api documentation
+	//register swagger api documentation
 	if os.Getenv("PRODUCTION_MODE") == "true" {
 		color.Cyan("Disabling api documentation...")
-		r.GET("/swagger/*any",  ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DisablingWrapHandler"))
-	}else {
+		r.GET("/swagger/*any", ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DisablingWrapHandler"))
+	} else {
 		color.Cyan("Enabling api documentation...")
-		swaggerUrl:="http://localhost:" + os.Getenv("PORT")  + "/doc/doc.json"
+		swaggerUrl := "http://localhost:" + os.Getenv("PORT") + "/doc/doc.json"
 		url := ginSwagger.URL(swaggerUrl) // The url pointing to API definition
-		r.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler,url))
+		r.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	}
 
 	r.Run()
