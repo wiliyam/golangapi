@@ -22,6 +22,7 @@ type HTTPError404 struct {
 type HTTPError500 struct {
 	Status  int    `json:"status" example:"500"`
 	Message string `json:"message" example:"Internal Server Error"`
+	Err     string `json:"err" example:"Internal Server Error"`
 }
 
 // // NewError example

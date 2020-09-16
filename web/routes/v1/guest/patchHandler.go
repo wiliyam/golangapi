@@ -9,15 +9,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	// "github.com/gin-gonic/gin"
 )
-
-//ReqBodyValidate request body tyep
-type ReqBodyValidate struct {
-	// Name     string `json:"name" example:"wiliyam"`
-	DeviceID   string `json:"deviceId" example:"1234567809"`
-	DeviceType string `json:"deviceType" example:"0"`
-}
 
 //SignInHanlder Guest godoc
 // @Summary guest login api
@@ -32,7 +27,7 @@ type ReqBodyValidate struct {
 // @Failure 404 {object} cm.HTTPError404
 // @Failure 500 {object} cm.HTTPError500
 // @Router /guest/signIn [post]
-func SignInHanlder() gin.HandlerFunc {
+func EditHanlder() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
@@ -42,8 +37,19 @@ func SignInHanlder() gin.HandlerFunc {
 		//authHeader := c.GetHeader("Authorization")
 		//get body data
 
-		var body dbmodel.GusetUserModelPost
+		var body dbmodel.GusetUserModelGet
 		c.BindJSON(&body)
+		q := c.Request.URL.Query()
+		id := q.Get("id")
+
+		objectId, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "id is in not object id formate in query params",
+			})
+			return
+		}
+		fmt.Println(objectId)
 		deviceid := body.DeviceId
 		devicetype := body.DeviceType
 		ipAddress := body.IpAddress
@@ -76,9 +82,13 @@ func SignInHanlder() gin.HandlerFunc {
 			LoginAt:       time.Now(),
 		}
 
+		newData := bson.M{
+			"$set": insertdata,
+		}
+
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-		result, err := mongodb.GetDb().Collection("guest").InsertOne(ctx, insertdata)
+		result, err := mongodb.GetDb().Collection("guest").UpdateOne(ctx, bson.M{"_id": objectId}, newData)
 
 		if err != nil {
 			println("err--->", err.Error())

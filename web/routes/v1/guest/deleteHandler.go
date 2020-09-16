@@ -9,15 +9,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	// "github.com/gin-gonic/gin"
 )
-
-//ReqBodyValidate request body tyep
-type ReqBodyValidate struct {
-	// Name     string `json:"name" example:"wiliyam"`
-	DeviceID   string `json:"deviceId" example:"1234567809"`
-	DeviceType string `json:"deviceType" example:"0"`
-}
 
 //SignInHanlder Guest godoc
 // @Summary guest login api
@@ -32,7 +27,7 @@ type ReqBodyValidate struct {
 // @Failure 404 {object} cm.HTTPError404
 // @Failure 500 {object} cm.HTTPError500
 // @Router /guest/signIn [post]
-func SignInHanlder() gin.HandlerFunc {
+func DeleteHanlder() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
@@ -42,43 +37,23 @@ func SignInHanlder() gin.HandlerFunc {
 		//authHeader := c.GetHeader("Authorization")
 		//get body data
 
-		var body dbmodel.GusetUserModelPost
+		var body dbmodel.GusetUserModelGet
 		c.BindJSON(&body)
-		deviceid := body.DeviceId
-		devicetype := body.DeviceType
-		ipAddress := body.IpAddress
+		q := c.Request.URL.Query()
+		id := q.Get("id")
 
-		var devicetypeMsg string
-
-		switch devicetype {
-		default:
-			devicetypeMsg = "unknown"
-		case 0:
-			devicetypeMsg = "unknown"
-		case 1:
-			devicetypeMsg = "web"
-		case 2:
-			devicetypeMsg = "android"
-		case 3:
-			devicetypeMsg = "ios"
+		objectId, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "id is in not object id formate in query params",
+			})
+			return
 		}
-
-		fmt.Println("body", body)
-		fmt.Println("deviceid", deviceid)
-		fmt.Println("devicetype", devicetype)
-		fmt.Println("devicetypeMsg", devicetypeMsg)
-
-		insertdata := dbmodel.GusetUserModelPost{
-			DeviceId:      deviceid,
-			DeviceType:    devicetype,
-			DeviceTypeMsg: devicetypeMsg,
-			IpAddress:     ipAddress,
-			LoginAt:       time.Now(),
-		}
+		fmt.Println(objectId)
 
 		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-		result, err := mongodb.GetDb().Collection("guest").InsertOne(ctx, insertdata)
+		result, err := mongodb.GetDb().Collection("guest").DeleteOne(ctx, bson.M{"_id": objectId})
 
 		if err != nil {
 			println("err--->", err.Error())
