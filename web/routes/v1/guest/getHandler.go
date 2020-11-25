@@ -6,11 +6,13 @@ import (
 	"golangapi/library/mongodb"
 	dbmodel "golangapi/models"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Gethandler godoc
@@ -31,8 +33,13 @@ func Gethandler() gin.HandlerFunc {
 		//get query params
 		q := c.Request.URL.Query()
 		//pagination
-		pagenum := q.Get("pagenum")
-		pagesize := q.Get("pagesize")
+		// var pagenum int
+		// var pagesize int
+		pagenum, err := strconv.ParseInt(q.Get("pagenum"), 6, 12)
+		pagesize, err := strconv.ParseInt(q.Get("pagesize"), 6, 12)
+
+		skip := pagesize * pagenum
+
 		fmt.Println(pagenum)
 		fmt.Println(pagesize)
 
@@ -42,7 +49,18 @@ func Gethandler() gin.HandlerFunc {
 
 		guests := []dbmodel.GusetUserModelGet{}
 
-		cursor, err := mongodb.GetDb().Collection("guest").Find(ctx, bson.M{}).Skip(pagenum).Limit(pagesize)
+		options := options.Find()
+
+		// Sort by `_id` field descending
+		options.SetSort(bson.D{{"_id", -1}})
+
+		// Limit by 10 documents only
+		options.SetLimit(pagesize)
+		options.SetSkip(skip)
+
+		// DB.C("collection").Find(nil, filter, &opts)
+
+		cursor, err := mongodb.GetDb().Collection("guest").Find(ctx, bson.D{}, options)
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
